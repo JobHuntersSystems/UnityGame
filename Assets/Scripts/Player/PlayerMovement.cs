@@ -29,7 +29,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (input.x != 0)
             sr.flipX = input.x < 0;
-            animator.SetBool("isMoving", input.magnitude > 0.1f);
+
+        animator.SetBool("isMoving", input.magnitude > 0.1f);
     }
     public void TriggerDeath()
     {

@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using System;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -8,6 +10,11 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("Flash")]
     public float flashDuration = 0.15f;
+
+    [Header("UI")]
+    public Slider healthBarSlider;
+
+    public static event Action OnDeath;
 
     public int CurrentHP { get; private set; }
 
@@ -27,6 +34,9 @@ public class PlayerHealth : MonoBehaviour
         StopAllCoroutines();
         StartCoroutine(FlashRed());
 
+        if (healthBarSlider != null)
+            healthBarSlider.value = (float)CurrentHP / maxHP;
+
         if (CurrentHP == 0)
             Die();
     }
@@ -40,6 +50,8 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        gameObject.SetActive(false);
+        OnDeath?.Invoke();
+        GetComponent<PlayerMovement>().enabled = false;
+        GetComponent<PlayerMovement>().TriggerDeath();
     }
 }
