@@ -1663,9 +1663,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3430203d02f42854ab50c241d8c748d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  enemyPrefabs: []
+  enemyPrefabs:
+  - {fileID: 1305806452}
   maxEnemies: 20
-  spawnInterval: 3
+  spawnInterval: 10
   enemiesPerWave: 3
   maxSpawnRadius: 20
 --- !u!4 &933878137
@@ -2388,6 +2389,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1190841290}
   m_CullTransparentMesh: 1
+--- !u!1 &1305806452 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3009341395633258677, guid: 3717b64ec8f32c14ba55845b4a94f32c, type: 3}
+  m_PrefabInstance: {fileID: 7722088861980360336}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1511546645
 GameObject:
   m_ObjectHideFlags: 0
