@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI statLevelText;
     public TextMeshProUGUI statXPText;
     public TextMeshProUGUI statTimeText;
+    public Button restartButton;
+    public float gameOverDelay = 1.5f;
 
     [Header("Upgrades")]
     public GameObject upgradePanel;
@@ -42,6 +45,7 @@ public class UIManager : MonoBehaviour
 
         gameOverPanel.SetActive(false);
         upgradePanel.SetActive(false);
+        restartButton?.onClick.AddListener(() => GameManager.Instance.RestartGame());
     }
 
     void OnEnable()
@@ -99,6 +103,12 @@ public class UIManager : MonoBehaviour
     private void ShowGameOver()
     {
         gameRunning = false;
+        StartCoroutine(ShowGameOverDelayed());
+    }
+
+    private IEnumerator ShowGameOverDelayed()
+    {
+        yield return new WaitForSecondsRealtime(gameOverDelay);
 
         int min = Mathf.FloorToInt(elapsedTime / 60f);
         int sec = Mathf.FloorToInt(elapsedTime % 60f);

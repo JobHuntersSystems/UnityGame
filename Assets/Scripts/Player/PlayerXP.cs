@@ -47,6 +47,7 @@ public class PlayerXP : MonoBehaviour
     private IEnumerator ResumeDelay()
     {
         yield return new WaitForSecondsRealtime(2f);
+        if (GameManager.Instance != null && GameManager.Instance.IsGameOver) yield break;
         Time.timeScale = 1f;
         CheckLevelUp();
     }
