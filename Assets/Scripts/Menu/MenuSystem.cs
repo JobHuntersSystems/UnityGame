@@ -13,8 +13,6 @@ public class MenuSystem : MonoBehaviour
     // Función para el botón de Salir
     public void QuitGame()
     {
-        // Como Application.Quit() no hace nada dentro del Editor de Unity,
-        // ponemos este mensaje en la consola para confirmar que el botón funciona.
         Debug.Log("Salidendo del juego, adios ");
         Application.Quit();  
     }
