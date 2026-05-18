@@ -28,6 +28,10 @@ public class UIManager : MonoBehaviour
     public Button[] upgradeButtons;
     public TextMeshProUGUI[] upgradeLabels;
 
+    [Header("Pausa")]
+    public GameObject pausePanel;
+    public GameObject pauseButton;
+
     private PlayerHealth playerHealth;
     private PlayerXP playerXP;
     private float elapsedTime;
@@ -42,18 +46,23 @@ public class UIManager : MonoBehaviour
 
         gameOverPanel.SetActive(false);
         upgradePanel.SetActive(false);
+        pausePanel.SetActive(false);
     }
 
     void OnEnable()
     {
         PlayerXP.OnLevelUp += ShowUpgradePanel;
         GameManager.OnGameOver += ShowGameOver;
+        GameManager.OnPause += ShowPause;
+        GameManager.OnResume += HidePause;
     }
 
     void OnDisable()
     {
         PlayerXP.OnLevelUp -= ShowUpgradePanel;
         GameManager.OnGameOver -= ShowGameOver;
+        GameManager.OnPause -= ShowPause;
+        GameManager.OnResume -= HidePause;
     }
 
     void Update()
@@ -100,6 +109,8 @@ public class UIManager : MonoBehaviour
     {
         gameRunning = false;
 
+        if (pauseButton != null) pauseButton.SetActive(false);
+
         int min = Mathf.FloorToInt(elapsedTime / 60f);
         int sec = Mathf.FloorToInt(elapsedTime % 60f);
 
@@ -110,9 +121,22 @@ public class UIManager : MonoBehaviour
         gameOverPanel.SetActive(true);
     }
 
-    // Botón "Reiniciar" del panel de Game Over
-    public void OnRestartClicked() => GameManager.Instance.RestartGame();
+    private void ShowPause()
+    {
+        pausePanel.SetActive(true);
+    }
 
-    // Botón "Menú" del panel de Game Over
-    public void OnMenuClicked() => GameManager.Instance.GoToMenu();
+    private void HidePause()
+    {
+        pausePanel.SetActive(false);
+    }
+
+    // Botones Game Over
+    public void OnRestartClicked() => GameManager.Instance.RestartGame();
+    public void OnMenuClicked()    => GameManager.Instance.GoToMenu();
+
+    // Botones Pausa
+    public void OnResumeClicked()  => GameManager.Instance.ResumeGame();
+    public void OnPauseMenuClicked() => GameManager.Instance.GoToMenu();
+
 }
