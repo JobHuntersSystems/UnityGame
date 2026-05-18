@@ -47,13 +47,13 @@ public class UIManager : MonoBehaviour
     void OnEnable()
     {
         PlayerXP.OnLevelUp += ShowUpgradePanel;
-        PlayerHealth.OnDeath += ShowGameOver;
+        GameManager.OnGameOver += ShowGameOver;
     }
 
     void OnDisable()
     {
         PlayerXP.OnLevelUp -= ShowUpgradePanel;
-        PlayerHealth.OnDeath -= ShowGameOver;
+        GameManager.OnGameOver -= ShowGameOver;
     }
 
     void Update()
@@ -109,4 +109,10 @@ public class UIManager : MonoBehaviour
 
         gameOverPanel.SetActive(true);
     }
+
+    // Botón "Reiniciar" del panel de Game Over
+    public void OnRestartClicked() => GameManager.Instance.RestartGame();
+
+    // Botón "Menú" del panel de Game Over
+    public void OnMenuClicked() => GameManager.Instance.GoToMenu();
 }
