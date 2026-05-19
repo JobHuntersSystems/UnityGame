@@ -107,4 +107,5 @@ public abstract class Enemy : MonoBehaviour
     public float  MaxHealth     => maxHealth;
     public bool   IsDead        => isDead;
     public float  MoveSpeed     => moveSpeed; 
+    public float  AttackRange   => attackRange;
 }
