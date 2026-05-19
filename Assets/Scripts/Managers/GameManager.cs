@@ -8,11 +8,13 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public static event Action OnGameOver;
+    public static event Action OnPause;
+    public static event Action OnResume;
 
     [SerializeField] private float gameOverDelay = 1.5f;
     [SerializeField] private string menuSceneName = "Menu";
 
-    public enum GameState { Playing, GameOver }
+    public enum GameState { Playing, Paused, GameOver }
     public GameState State { get; private set; } = GameState.Playing;
 
     void Awake()
@@ -27,6 +29,30 @@ public class GameManager : MonoBehaviour
 
     void OnEnable()  => PlayerHealth.OnDeath += HandlePlayerDeath;
     void OnDisable() => PlayerHealth.OnDeath -= HandlePlayerDeath;
+
+    public void TogglePause()
+    {
+        if (State == GameState.GameOver) return;
+        // Si el upgrade panel ha congelado el tiempo, no permitir pausar
+        if (State == GameState.Playing && Time.timeScale == 0f) return;
+
+        if (State == GameState.Playing) PauseGame();
+        else if (State == GameState.Paused) ResumeGame();
+    }
+
+    public void PauseGame()
+    {
+        State = GameState.Paused;
+        Time.timeScale = 0f;
+        OnPause?.Invoke();
+    }
+
+    public void ResumeGame()
+    {
+        State = GameState.Playing;
+        Time.timeScale = 1f;
+        OnResume?.Invoke();
+    }
 
     private void HandlePlayerDeath()
     {

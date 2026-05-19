@@ -1,30 +1,15 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class AmbientMusic : MonoBehaviour
 {
-    [SerializeField] private Slider volumeSlider;
+    public static AmbientMusic Instance { get; private set; }
 
     private AudioSource audioSource;
-    private const string VolumeKey = "MusicVolume";
 
     void Awake()
     {
+        Instance = this;
         audioSource = GetComponent<AudioSource>();
-
-        float savedVolume = PlayerPrefs.GetFloat(VolumeKey, 0.4f);
-        audioSource.volume = savedVolume;
-
-        if (volumeSlider != null)
-        {
-            volumeSlider.value = savedVolume;
-            volumeSlider.onValueChanged.AddListener(OnSliderChanged);
-        }
-    }
-
-    private void OnSliderChanged(float value)
-    {
-        audioSource.volume = value;
-        PlayerPrefs.SetFloat(VolumeKey, value);
+        audioSource.volume = PlayerPrefs.GetFloat("MusicVolume", 0.4f);
     }
 }
