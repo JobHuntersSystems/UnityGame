@@ -12,9 +12,12 @@ public class GruntEnemyData : ScriptableObject
     public float  maxHealth       = 150f;   // Más HP que los otros, es el tanque
     public float  moveSpeed       = 3f;   // Lento
     public float  attackDamage    = 20f;
-    public float  attackRange     = 1.2f;
+    public float  attackRange     = 0.25f;
     public int    experienceReward = 30;
 
+    [Header("Ataque")]
+    public float attackCooldown = 1f; 
+      
     [Header("Config especial Grunt")]
     public float chargeMultiplier    = 2.5f;  // Multiplicador de daño al cargar
     public float chargeDuration      = 3f;    // Segundos que dura la carga
