@@ -75,12 +75,14 @@ public class GruntEnemyMover : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        // Rojo = rango de ataque
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, grunt != null ? grunt.AttackRange : 1.2f);
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        Vector3 center = (sr != null) ? sr.bounds.center : transform.position;
+        float scale = transform.localScale.x;
 
-        // Amarillo = rango de detección (para referencia visual)
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(center, (grunt != null ? grunt.AttackRange : 1.2f) * scale);
+
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, 6f);
+        Gizmos.DrawWireSphere(center, 6f * scale);
     }
 }
