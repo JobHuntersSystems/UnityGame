@@ -55,19 +55,24 @@ public class GruntEnemy : Enemy
     // Implementación de abstractos
     // -------------------------------------------------------
 
+    // Cambia la firma del Attack para recibir al jugador
+    public void Attack(PlayerHealth target)
+    {
+        if (isDead || target == null) return;
+
+        int damage = Mathf.RoundToInt(isCharging
+            ? attackDamage * data.chargeMultiplier
+            : attackDamage);
+
+        target.TakeDamage(damage);
+        Debug.Log($"{enemyName} golpea por {damage}{(isCharging ? " ⚡ carga!" : "")}");
+    }
+
+    // La versión abstracta del padre hay que mantenerla — sobrescríbela así:
     public override void Attack()
     {
-        if (isDead) return;
-
-        float finalDamage = isCharging
-            ? attackDamage * data.chargeMultiplier
-            : attackDamage;
-
-        Debug.Log($"{enemyName} golpea por {finalDamage}{(isCharging ? " ⚡ (carga!)" : "")}");
-
-        // TODO (cuando tengas al jugador):
-        // Collider2D hit = Physics2D.OverlapCircle(transform.position, attackRange, playerLayer);
-        // if (hit != null) hit.GetComponent<Player>()?.TakeDamage(finalDamage);
+        // Versión sin target — no se usa directamente en el Grunt
+        // El Mover llama a Attack(PlayerHealth) directamente
     }
 
     public override void UseSpecialAbility()
