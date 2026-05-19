@@ -157,7 +157,9 @@ public class GruntEnemy : Enemy
     // -------------------------------------------------------
     private void OnDrawGizmosSelected()
     {
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        Vector3 center = (sr != null) ? sr.bounds.center : transform.position;
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.DrawWireSphere(center, attackRange * transform.localScale.x);
     }
 }
