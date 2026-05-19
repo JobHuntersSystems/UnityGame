@@ -6,12 +6,11 @@ using System.Collections;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
     public static event Action OnGameOver;
     public static event Action OnPause;
     public static event Action OnResume;
 
-    [SerializeField] private float gameOverDelay = 1.5f;
+    [SerializeField] private float gameOverDelay = 1f;
     [SerializeField] private string menuSceneName = "Menu";
 
     public enum GameState { Playing, Paused, GameOver }
@@ -33,7 +32,6 @@ public class GameManager : MonoBehaviour
     public void TogglePause()
     {
         if (State == GameState.GameOver) return;
-        // Si el upgrade panel ha congelado el tiempo, no permitir pausar
         if (State == GameState.Playing && Time.timeScale == 0f) return;
 
         if (State == GameState.Playing) PauseGame();

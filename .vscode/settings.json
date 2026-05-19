@@ -67,6 +67,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "UnityGame.slnx",
+    "dotnet.defaultSolution": "Unity_Game.slnx",
     "dotnet.enableWorkspaceBasedDevelopment": false
 }
