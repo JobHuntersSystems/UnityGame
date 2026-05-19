@@ -16,8 +16,9 @@ MonoBehaviour:
   maxHealth: 150
   moveSpeed: 3
   attackDamage: 20
-  attackRange: 1.2
-  experienceReward: 30
+  attackRange: 1
+  experienceReward: 2
+  attackCooldown: 1
   chargeMultiplier: 2.5
   chargeDuration: 3
   enrageTreshold: 0.25
