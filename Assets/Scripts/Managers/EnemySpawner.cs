@@ -5,15 +5,27 @@ public class EnemySpawner : MonoBehaviour
     [Header("Prefabs de Enemigos")]
     public GameObject[] enemyPrefabs;
 
-    [Header("Configuracion")]
-    public int maxEnemies = 20;
-    public float spawnInterval = 3f;
-    public int enemiesPerWave = 3;
+    [Header("Configuracion inicial")]
+    public int   maxEnemies     = 20;
+    public float spawnInterval  = 3f;
+    public int   enemiesPerWave = 3;
     public float maxSpawnRadius = 20f;
 
+    [Header("Escalado con el tiempo")]
+    public float intervalReductionPerMinute = 0.3f;
+    public float minSpawnInterval           = 0.5f;
+    public int   waveIncreasePerMinute      = 1;
+    public int   maxEnemiesIncreasePerMinute = 5;
+    public int   absoluteMaxEnemies        = 80;
+
     private Transform playerTransform;
-    private Camera mainCamera;
-    private float spawnTimer;
+    private Camera    mainCamera;
+    private float     spawnTimer;
+    private float     elapsedTime;
+
+    private float CurrentInterval  => Mathf.Max(minSpawnInterval, spawnInterval  - intervalReductionPerMinute  * (elapsedTime / 60f));
+    private int   CurrentWaveSize  =>             Mathf.RoundToInt(enemiesPerWave + waveIncreasePerMinute       * (elapsedTime / 60f));
+    private int   CurrentMaxEnemies => Mathf.Min(absoluteMaxEnemies, maxEnemies  + maxEnemiesIncreasePerMinute * Mathf.FloorToInt(elapsedTime / 60f));
 
     void Start()
     {
@@ -25,8 +37,10 @@ public class EnemySpawner : MonoBehaviour
     {
         if (playerTransform == null) return;
 
-        spawnTimer += Time.deltaTime;
-        if (spawnTimer >= spawnInterval)
+        elapsedTime += Time.deltaTime;
+        spawnTimer  += Time.deltaTime;
+
+        if (spawnTimer >= CurrentInterval)
         {
             spawnTimer = 0f;
             TrySpawnWave();
@@ -36,9 +50,9 @@ public class EnemySpawner : MonoBehaviour
     void TrySpawnWave()
     {
         int current = GameObject.FindGameObjectsWithTag("Enemy").Length;
-        if (current >= maxEnemies) return;
+        if (current >= CurrentMaxEnemies) return;
 
-        int toSpawn = Mathf.Min(enemiesPerWave, maxEnemies - current);
+        int toSpawn = Mathf.Min(CurrentWaveSize, CurrentMaxEnemies - current);
         for (int i = 0; i < toSpawn; i++)
         {
             if (TryGetOffscreenPosition(out Vector2 pos))

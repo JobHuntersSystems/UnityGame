@@ -35,8 +35,11 @@ public class GruntEnemy : Enemy
             maxHealth    = data.maxHealth;
         }
 
-        base.OnEnable(); // currentHealth = maxHealth, isDead = false
+        base.OnEnable();
         if (spriteRenderer != null) spriteRenderer.color = Color.white;
+
+        if (UpgradeManager.Instance != null)
+            moveSpeed *= UpgradeManager.Instance.EnemySpeedMultiplier;
     }
 
     protected override void Start()

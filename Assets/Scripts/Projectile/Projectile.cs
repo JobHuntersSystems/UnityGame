@@ -1,19 +1,27 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Projectile : MonoBehaviour
 {
-    private Transform target;
+    [SerializeField] private float baseDamage = 10f;
+    [SerializeField] private float lifetime = 5f;
+
+    private float damage;
     private float moveSpeed;
     private Vector3 moveDirection;
-
-    [SerializeField] private float damage = 10f;
-    [SerializeField] private float lifetime = 5f;
-    private float hitDistance = 0.15f;
+    private Transform target;
+    private bool isPenetrating;
+    private readonly HashSet<Enemy> hitEnemies = new HashSet<Enemy>();
+    private const float hitRadius = 0.2f;
 
     void OnEnable()
     {
-        target = null;
+        damage        = baseDamage;
+        moveSpeed     = 0f;
         moveDirection = Vector3.zero;
+        target        = null;
+        isPenetrating = false;
+        hitEnemies.Clear();
         CancelInvoke();
         Invoke(nameof(ReturnToPool), lifetime);
     }
@@ -21,15 +29,7 @@ public class Projectile : MonoBehaviour
     void Update()
     {
         if (target != null)
-        {
             moveDirection = (target.position - transform.position).normalized;
-
-            if (Vector3.Distance(transform.position, target.position) <= hitDistance)
-            {
-                TryDealDamage(target);
-                return;
-            }
-        }
         else if (moveDirection == Vector3.zero)
         {
             ReturnToPool();
@@ -37,19 +37,45 @@ public class Projectile : MonoBehaviour
         }
 
         transform.position += moveDirection * moveSpeed * Time.deltaTime;
-    }
 
-    private void TryDealDamage(Transform hitTarget)
-    {
-        Enemy enemy = hitTarget.GetComponent<Enemy>();
-        if (enemy == null)
-            enemy = hitTarget.GetComponentInParent<Enemy>();
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, hitRadius);
+        foreach (Collider2D col in hits)
+        {
+            if (!col.CompareTag("Enemy")) continue;
+            Enemy enemy = col.GetComponent<Enemy>() ?? col.GetComponentInParent<Enemy>();
+            if (enemy == null || hitEnemies.Contains(enemy)) continue;
 
-        if (enemy != null)
+            hitEnemies.Add(enemy);
             enemy.TakeDamage(damage);
 
-        ReturnToPool();
+            if (!isPenetrating)
+            {
+                ReturnToPool();
+                return;
+            }
+        }
     }
+
+    public void Initialize(Transform t, float speed, float damageBonus, bool penetrating)
+    {
+        target        = t;
+        moveSpeed     = speed;
+        damage        = baseDamage + damageBonus;
+        isPenetrating = penetrating;
+        if (t != null)
+            moveDirection = (t.position - transform.position).normalized;
+    }
+
+    public void InitializeDirection(Vector2 dir, float speed, float damageBonus, bool penetrating)
+    {
+        target        = null;
+        moveDirection = dir.normalized;
+        moveSpeed     = speed;
+        damage        = baseDamage + damageBonus;
+        isPenetrating = penetrating;
+    }
+
+    public void SetTarget(Transform t, float speed) => Initialize(t, speed, 0f, false);
 
     private void ReturnToPool()
     {
@@ -58,14 +84,5 @@ public class Projectile : MonoBehaviour
             ObjectPooler.Instance.ReturnToPool("Projectile", gameObject);
         else
             Destroy(gameObject);
-    }
-
-    public void SetTarget(Transform target, float moveSpeed)
-    {
-        this.target = target;
-        this.moveSpeed = moveSpeed;
-
-        if (target != null)
-            moveDirection = (target.position - transform.position).normalized;
     }
 }

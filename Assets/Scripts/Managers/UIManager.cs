@@ -94,6 +94,14 @@ public class UIManager : MonoBehaviour
         xpBarTarget = 1f;
         xpBar.value = 1f;
         yield return new WaitForSecondsRealtime(0.3f);
+
+        if (UpgradeManager.Instance != null)
+        {
+            UpgradeData[] choices = UpgradeManager.Instance.PickRandomUpgrades(upgradeButtons.Length);
+            for (int i = 0; i < upgradeLabels.Length && i < choices.Length; i++)
+                upgradeLabels[i].text = $"<b>{choices[i].upgradeName}</b>\n{choices[i].description}";
+        }
+
         upgradePanel.SetActive(true);
     }
 
@@ -102,6 +110,7 @@ public class UIManager : MonoBehaviour
         upgradePanel.SetActive(false);
         xpBar.value = 0f;
         xpBarTarget = 0f;
+        UpgradeManager.Instance?.ApplyUpgrade(index);
         playerXP.ResumeAfterUpgrade();
     }
 

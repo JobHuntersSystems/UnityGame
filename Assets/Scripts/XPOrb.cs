@@ -40,6 +40,9 @@ public class XPOrb : MonoBehaviour
             playerTransform = player.transform;
             playerXP = player.GetComponent<PlayerXP>();
         }
+
+        if (UpgradeManager.Instance != null)
+            attractionRange += UpgradeManager.Instance.XPAttractionBonus;
     }
 
     void Update()

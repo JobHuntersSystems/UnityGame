@@ -108,10 +108,12 @@ public abstract class Enemy : MonoBehaviour
     // -------------------------------------------------------
 
     // Getters
+    public void ApplySlow(float multiplier) => moveSpeed *= multiplier;
+
     public string EnemyName     => enemyName;
     public float  CurrentHealth => currentHealth;
     public float  MaxHealth     => maxHealth;
     public bool   IsDead        => isDead;
-    public float  MoveSpeed     => moveSpeed; 
+    public float  MoveSpeed     => moveSpeed;
     public float  AttackRange   => attackRange;
 }

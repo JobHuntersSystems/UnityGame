@@ -19,6 +19,8 @@ public class PlayerHealth : MonoBehaviour
     public int CurrentHP { get; private set; }
 
     private SpriteRenderer sp;
+    private float regenPerSecond = 0f;
+    private bool isDead = false;
 
     void Awake()
     {
@@ -28,17 +30,46 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        CurrentHP -= amount;
-        CurrentHP = Mathf.Max(CurrentHP, 0);
+        if (isDead) return;
+        CurrentHP = Mathf.Max(CurrentHP - amount, 0);
 
-        StopAllCoroutines();
+        StopCoroutine("FlashRed");
         StartCoroutine(FlashRed());
 
+        UpdateHealthBar();
+
+        if (CurrentHP == 0) Die();
+    }
+
+    public void IncreaseMaxHP(int amount)
+    {
+        maxHP += amount;
+        CurrentHP = Mathf.Min(CurrentHP + amount, maxHP);
+        UpdateHealthBar();
+    }
+
+    public void AddRegen(float hpPerSecond)
+    {
+        bool wasZero = regenPerSecond == 0f;
+        regenPerSecond += hpPerSecond;
+        if (wasZero) StartCoroutine(RegenLoop());
+    }
+
+    private IEnumerator RegenLoop()
+    {
+        while (!isDead)
+        {
+            yield return new WaitForSeconds(1f);
+            if (isDead) yield break;
+            CurrentHP = Mathf.Min(CurrentHP + Mathf.RoundToInt(regenPerSecond), maxHP);
+            UpdateHealthBar();
+        }
+    }
+
+    private void UpdateHealthBar()
+    {
         if (healthBarSlider != null)
             healthBarSlider.value = (float)CurrentHP / maxHP;
-
-        if (CurrentHP == 0)
-            Die();
     }
 
     private IEnumerator FlashRed()
@@ -50,8 +81,10 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
+        isDead = true;
         OnDeath?.Invoke();
-        GetComponent<PlayerMovement>().enabled = false;
-        GetComponent<PlayerMovement>().TriggerDeath();
+        PlayerMovement pm = GetComponent<PlayerMovement>();
+        pm.enabled = false;
+        pm.TriggerDeath();
     }
 }
