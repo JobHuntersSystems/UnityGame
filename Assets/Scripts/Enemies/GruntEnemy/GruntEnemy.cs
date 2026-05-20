@@ -1,4 +1,4 @@
-using System.Collections;  // ← añade esta
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))] // Unity añade SpriteRenderer automático si falta
@@ -58,7 +58,7 @@ public class GruntEnemy : Enemy
     // Cambia la firma del Attack para recibir al jugador
     public void Attack(PlayerHealth target)
     {
-        if (isDead || target == null) return;
+        if (isDead || target == null || data == null) return;
 
         int damage = Mathf.RoundToInt(isCharging
             ? attackDamage * data.chargeMultiplier
@@ -77,7 +77,7 @@ public class GruntEnemy : Enemy
 
     public override void UseSpecialAbility()
     {
-        if (isDead || isCharging) return;
+        if (isDead || isCharging || data == null) return;
 
         isCharging   = true;
         chargeEndTime = Time.time + data.chargeDuration;

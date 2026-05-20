@@ -34,11 +34,17 @@ public class XPOrb : MonoBehaviour
 
     void Start()
     {
-        playerTransform = GameObject.FindWithTag("Player").transform;
-        playerXP = playerTransform.GetComponent<PlayerXP>();
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            playerTransform = player.transform;
+            playerXP = player.GetComponent<PlayerXP>();
+        }
     }
+
     void Update()
     {
+        if (playerTransform == null) return;
         float distance = Vector2.Distance(transform.position, playerTransform.position);
         if(distance < attractionRange)
         {

@@ -7,7 +7,10 @@ public class Projectile : MonoBehaviour
     private Vector3 moveDirection;
 
     [SerializeField] private float damage = 10f;
+    [SerializeField] private float lifetime = 5f;
     private float hitDistance = 0.15f;
+
+    void Start() => Destroy(gameObject, lifetime);
 
     void Update()
     {
