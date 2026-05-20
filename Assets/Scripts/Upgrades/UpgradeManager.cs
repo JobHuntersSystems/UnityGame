@@ -24,7 +24,7 @@ public class UpgradeManager : MonoBehaviour
         playerMovement = player.GetComponent<PlayerMovement>();
         playerHealth   = player.GetComponent<PlayerHealth>();
         shooter        = player.GetComponentInChildren<Shooter>();
-        if (shooter == null) shooter = FindObjectOfType<Shooter>();
+        if (shooter == null) shooter = FindAnyObjectByType<Shooter>();
     }
 
     public UpgradeData[] PickRandomUpgrades(int count = 3)
@@ -67,14 +67,14 @@ public class UpgradeManager : MonoBehaviour
     private void ApplySlowToEnemies(float slowAmount)
     {
         EnemySpeedMultiplier *= (1f - slowAmount);
-        foreach (Enemy e in FindObjectsOfType<Enemy>())
+        foreach (Enemy e in FindObjectsByType<Enemy>())
             e.ApplySlow(1f - slowAmount);
     }
 
     private void ApplyXPAttraction(float bonus)
     {
         XPAttractionBonus += bonus;
-        foreach (XPOrb orb in FindObjectsOfType<XPOrb>())
+        foreach (XPOrb orb in FindObjectsByType<XPOrb>())
             orb.attractionRange += bonus;
     }
 }
