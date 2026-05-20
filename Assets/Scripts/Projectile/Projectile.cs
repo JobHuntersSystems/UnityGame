@@ -53,6 +53,9 @@ public class Projectile : MonoBehaviour
                 ReturnToPool();
                 return;
             }
+
+            if (target != null && col.transform == target)
+                target = null;
         }
     }
 
