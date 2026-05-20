@@ -113,7 +113,7 @@ MonoBehaviour:
   moveSpeed: 20
   attackDamage: 10
   attackRange: 0.5
-  experienceReward: 50
+  experienceReward: 5
   enemySprite: {fileID: 0}
   data: {fileID: 11400000, guid: f09da2337b1883d4c8e253e0ccfabc6f, type: 2}
 --- !u!95 &1948376608290280019
@@ -209,7 +209,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0

@@ -9,43 +9,36 @@ public class Shooter : MonoBehaviour
 
     void Start()
     {
-        if (projectilePrefab == null)
-            Debug.LogError("[Shooter] Falta asignar el projectilePrefab en el Inspector.", this);
-        else if (projectilePrefab.GetComponent<Projectile>() == null)
-            Debug.LogWarning("[Shooter] El prefab no tiene el script Projectile.", this);
-        else
-            Debug.Log("[Shooter] Configurado correctamente.", this);
+        if (ObjectPooler.Instance == null)
+            Debug.LogWarning("[Shooter] No hay ObjectPooler en la escena. Se usará Instantiate como fallback.", this);
     }
 
     void Update()
     {
-        if (projectilePrefab == null || shootRate <= 0f) return;
+        if (shootRate <= 0f) return;
 
         shootTimer -= Time.deltaTime;
         if (shootTimer > 0f) return;
 
-        Transform target = GetClosestEnemy(); 
-        
+        Transform target = GetClosestEnemy();
+
         if (target == null)
         {
             shootTimer = 0.2f;
-            Debug.LogWarning("[Shooter] No se encontró ningún enemigo con tag 'Enemy'.", this);
             return;
         }
 
         shootTimer = shootRate;
-        Debug.Log($"[Shooter] Disparando a {target.name}", this);
 
-        GameObject projectileObj = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+        GameObject projectileObj = ObjectPooler.Instance != null
+            ? ObjectPooler.Instance.GetFromPool("Projectile", transform.position, Quaternion.identity)
+            : Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+
+        if (projectileObj == null) return;
+
         Projectile projectile = projectileObj.GetComponent<Projectile>();
-
-        if (projectile == null)
-        {
-            Debug.LogWarning("[Shooter] El prefab no tiene el script Projectile. Añadiéndolo automáticamente.");
-            projectile = projectileObj.AddComponent<Projectile>();
-        }
-
-        projectile.SetTarget(target, projectileSpeed);
+        if (projectile != null)
+            projectile.SetTarget(target, projectileSpeed);
     }
 
     Transform GetClosestEnemy()

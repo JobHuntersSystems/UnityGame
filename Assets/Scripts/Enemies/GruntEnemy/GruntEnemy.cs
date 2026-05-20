@@ -18,7 +18,25 @@ public class GruntEnemy : Enemy
 
     protected override void Awake()
     {
-        base.Awake(); // Cachea el SpriteRenderer
+        base.Awake();
+    }
+
+    protected override void OnEnable()
+    {
+        isEnraged     = false;
+        isCharging    = false;
+        chargeEndTime = 0f;
+        damageFlashCoroutine = null;
+
+        if (data != null)
+        {
+            moveSpeed    = data.moveSpeed;
+            attackDamage = data.attackDamage;
+            maxHealth    = data.maxHealth;
+        }
+
+        base.OnEnable(); // currentHealth = maxHealth, isDead = false
+        if (spriteRenderer != null) spriteRenderer.color = Color.white;
     }
 
     protected override void Start()

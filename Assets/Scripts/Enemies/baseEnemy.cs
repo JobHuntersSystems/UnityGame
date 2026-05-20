@@ -16,14 +16,14 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] protected int   experienceReward = 50;
 
     [Header("Visuals")]
-    [SerializeField] protected Sprite enemySprite; // Arrastra el sprite aquí desde Assets
+    [SerializeField] protected Sprite enemySprite;
 
     // --- Estado interno ---
     protected float currentHealth;
     protected bool  isDead = false;
 
-    // Referencia al SpriteRenderer del GameObject
     protected SpriteRenderer spriteRenderer;
+    private string poolTag;
 
     // -------------------------------------------------------
     // Ciclo de vida Unity
@@ -31,15 +31,20 @@ public abstract class Enemy : MonoBehaviour
 
     protected virtual void Awake()
     {
-        // Awake se llama antes que Start, ideal para cachear referencias
         spriteRenderer = GetComponent<SpriteRenderer>();
+        poolTag = gameObject.name.Replace("(Clone)", "").Trim();
+    }
+
+    protected virtual void OnEnable()
+    {
+        currentHealth = maxHealth;
+        isDead = false;
     }
 
     protected virtual void Start()
     {
         currentHealth = maxHealth;
 
-        // Asigna el sprite si se configuró desde el Inspector
         if (spriteRenderer != null && enemySprite != null)
             spriteRenderer.sprite = enemySprite;
     }
@@ -92,9 +97,10 @@ public abstract class Enemy : MonoBehaviour
     protected virtual void Die()
     {
         isDead = true;
-        Debug.Log($"{enemyName} ha muerto. XP otorgada: {experienceReward}");
-        // Aquí después: animación de muerte, drop de items, etc.
-        Destroy(gameObject); // Elimina el GameObject de la escena
+        if (ObjectPooler.Instance != null)
+            ObjectPooler.Instance.ReturnToPool(poolTag, gameObject);
+        else
+            Destroy(gameObject);
     }
 
     // -------------------------------------------------------

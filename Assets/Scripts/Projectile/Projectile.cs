@@ -10,7 +10,13 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float lifetime = 5f;
     private float hitDistance = 0.15f;
 
-    void Start() => Destroy(gameObject, lifetime);
+    void OnEnable()
+    {
+        target = null;
+        moveDirection = Vector3.zero;
+        CancelInvoke();
+        Invoke(nameof(ReturnToPool), lifetime);
+    }
 
     void Update()
     {
@@ -26,9 +32,9 @@ public class Projectile : MonoBehaviour
         }
         else if (moveDirection == Vector3.zero)
         {
-            Destroy(gameObject);
+            ReturnToPool();
             return;
-        } 
+        }
 
         transform.position += moveDirection * moveSpeed * Time.deltaTime;
     }
@@ -37,23 +43,27 @@ public class Projectile : MonoBehaviour
     {
         Enemy enemy = hitTarget.GetComponent<Enemy>();
         if (enemy == null)
-        {
             enemy = hitTarget.GetComponentInParent<Enemy>();
-        }
 
         if (enemy != null)
-        {
             enemy.TakeDamage(damage);
-        }
 
-        Destroy(gameObject);
+        ReturnToPool();
+    }
+
+    private void ReturnToPool()
+    {
+        CancelInvoke();
+        if (ObjectPooler.Instance != null)
+            ObjectPooler.Instance.ReturnToPool("Projectile", gameObject);
+        else
+            Destroy(gameObject);
     }
 
     public void SetTarget(Transform target, float moveSpeed)
     {
         this.target = target;
         this.moveSpeed = moveSpeed;
-        Debug.Log($"[Projectile] SetTarget → Target={target?.name}, Speed={moveSpeed}, Pos={transform.position}");
 
         if (target != null)
             moveDirection = (target.position - transform.position).normalized;

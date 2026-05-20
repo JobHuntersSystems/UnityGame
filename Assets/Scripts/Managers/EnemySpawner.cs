@@ -70,7 +70,13 @@ public class EnemySpawner : MonoBehaviour
     {
         if (enemyPrefabs.Length == 0) return;
         GameObject prefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
-        Instantiate(prefab, position, Quaternion.identity);
+
+        GameObject enemy = null;
+        if (ObjectPooler.Instance != null)
+            enemy = ObjectPooler.Instance.GetFromPool(prefab.name, position, Quaternion.identity);
+
+        if (enemy == null)
+            Instantiate(prefab, position, Quaternion.identity);
     }
 
     void OnDrawGizmosSelected()

@@ -22,7 +22,12 @@ public class GruntEnemyMover : MonoBehaviour
 
         rb.gravityScale   = 0f;
         rb.freezeRotation = true;
-        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous; // ← añade
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+    }
+
+    void OnEnable()
+    {
+        lastAttackTime = -Mathf.Infinity;
     }
 
     void Start()
@@ -49,12 +54,10 @@ public class GruntEnemyMover : MonoBehaviour
 
         MoveTowardsPlayer();
     }
-    private void OnCollisionStay2D(Collision2D collision)
+    private void OnTriggerStay2D(Collider2D other)
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
+        if (other.CompareTag("Player"))
             TryAttack();
-        }
     }
     void MoveTowardsPlayer()
     {

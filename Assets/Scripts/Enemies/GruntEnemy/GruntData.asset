@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: GruntData
   m_EditorClassIdentifier: Assembly-CSharp::GruntEnemyData
   enemyName: Grunt
-  maxHealth: 150
+  maxHealth: 100
   moveSpeed: 3
   attackDamage: 20
   attackRange: 1
-  experienceReward: 2
+  experienceReward: 5
   attackCooldown: 1
   chargeMultiplier: 2.5
   chargeDuration: 3
