@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
@@ -37,6 +38,7 @@ public class EnemySpawner : MonoBehaviour
     {
         int current = GameObject.FindGameObjectsWithTag("Enemy").Length;
         if (current >= maxEnemies) return;
+        if (current.IsUnityNull()) return;
 
         int toSpawn = Mathf.Min(enemiesPerWave, maxEnemies - current);
         for (int i = 0; i < toSpawn; i++)
