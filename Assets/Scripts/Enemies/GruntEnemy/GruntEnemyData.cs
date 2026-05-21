@@ -8,21 +8,24 @@ using UnityEngine;
 public class GruntEnemyData : ScriptableObject
 {
     [Header("Stats base")]
-    public string enemyName       = "Grunt";
-    public float  maxHealth       = 150f;   // Más HP que los otros, es el tanque
-    public float  moveSpeed       = 3f;   // Lento
-    public float  attackDamage    = 20f;
-    public float  attackRange     = 0.25f;
-    public int    experienceReward = 30;
+    public string enemyName = "Grunt";
+    public float maxHealth = 150f;
+    public float moveSpeed = 3f;
+    public float attackDamage = 20f;
+    public float attackRange = 0.25f;
+
+    [Header("XP")]
+    public int minExperienceReward = 20;
+    public int maxExperienceReward = 40;
 
     [Header("Ataque")]
-    public float attackCooldown = 1f; 
-      
+    public float attackCooldown = 1f;
+
     [Header("Config especial Grunt")]
-    public float chargeMultiplier    = 2.5f;  // Multiplicador de daño al cargar
-    public float chargeDuration      = 3f;    // Segundos que dura la carga
-    public float enrageTreshold      = 0.25f; // Se enfurece por debajo del 25% HP
+    public float chargeMultiplier = 2.5f;
+    public float chargeDuration = 3f;
+    public float enrageTreshold = 0.25f;
 
     [Header("Visuals")]
-    public Sprite sprite; // Arrastra el sprite aquí cuando te lo pasen
+    public Sprite sprite;
 }

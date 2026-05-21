@@ -4,39 +4,56 @@ using UnityEngine;
 public class GruntEnemyMover : MonoBehaviour
 {
     [Header("Referencias")]
-    [SerializeField] private GruntEnemy      grunt;
-    [SerializeField] private GruntEnemyData  data; 
+    [SerializeField] private GruntEnemy grunt;
+    [SerializeField] private GruntEnemyData data;
 
-    private Rigidbody2D    rb;
+    [Header("Movimiento")]
+    [SerializeField] private float stopDistanceFromPlayer = 0.35f;
+
+    [Header("Separación entre enemigos")]
+    [SerializeField] private float separationRadius = 0.45f;
+    [SerializeField] private float separationForce = 0.9f;
+
+    [Header("Visual")]
+    [SerializeField] private float flipThreshold = 0.15f;
+
+    private Rigidbody2D rb;
     private SpriteRenderer sr;
-    private Transform      playerTransform;
-    private PlayerHealth   playerHealth;
+    private Transform playerTransform;
+    private PlayerHealth playerHealth;
 
-    // Control del ataque
     private float lastAttackTime = -Mathf.Infinity;
+    private Vector2 randomSeparationDirection;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
 
-        rb.gravityScale   = 0f;
+        if (grunt == null)
+            grunt = GetComponent<GruntEnemy>();
+
+        rb.gravityScale = 0f;
         rb.freezeRotation = true;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+        GenerateRandomSeparationDirection();
     }
 
     void OnEnable()
     {
         lastAttackTime = -Mathf.Infinity;
+        GenerateRandomSeparationDirection();
     }
 
     void Start()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
+
         if (player != null)
         {
             playerTransform = player.transform;
-            playerHealth    = player.GetComponent<PlayerHealth>(); // referencia directa
+            playerHealth = player.GetComponent<PlayerHealth>();
         }
         else
         {
@@ -48,44 +65,120 @@ public class GruntEnemyMover : MonoBehaviour
     {
         if (grunt == null || grunt.IsDead || playerTransform == null)
         {
-            rb.MovePosition(rb.position);
+            rb.linearVelocity = Vector2.zero;
             return;
         }
 
         MoveTowardsPlayer();
     }
+
     private void OnTriggerStay2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
             TryAttack();
     }
+
     void MoveTowardsPlayer()
     {
-        Vector2 direction = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
-        Vector2 newPos = rb.position + direction * grunt.MoveSpeed * Time.fixedDeltaTime;
+        Vector2 enemyPosition = rb.position;
+        Vector2 playerPosition = playerTransform.position;
+
+        Vector2 toPlayer = playerPosition - enemyPosition;
+        float distanceToPlayer = toPlayer.magnitude;
+
+        Vector2 directionToPlayer = Vector2.zero;
+
+        if (distanceToPlayer > stopDistanceFromPlayer)
+            directionToPlayer = toPlayer.normalized;
+
+        Vector2 separationDirection = GetSeparationDirection();
+
+        Vector2 finalDirection = directionToPlayer + separationDirection * separationForce;
+
+        if (finalDirection.sqrMagnitude > 0.001f)
+            finalDirection.Normalize();
+
+        Vector2 newPos = enemyPosition + finalDirection * grunt.MoveSpeed * Time.fixedDeltaTime;
         rb.MovePosition(newPos);
 
-        if (direction.x != 0)
-            sr.flipX = direction.x < 0;
+        UpdateFlip(finalDirection);
+    }
+
+    Vector2 GetSeparationDirection()
+    {
+        Collider2D[] nearbyColliders = Physics2D.OverlapCircleAll(
+            rb.position,
+            separationRadius
+        );
+
+        Vector2 separationDirection = Vector2.zero;
+
+        foreach (Collider2D col in nearbyColliders)
+        {
+            if (col.gameObject == gameObject) continue;
+
+            Enemy otherEnemy = col.GetComponent<Enemy>();
+
+            if (otherEnemy == null) continue;
+            if (otherEnemy.IsDead) continue;
+
+            Vector2 awayFromEnemy = rb.position - (Vector2)col.transform.position;
+            float distance = awayFromEnemy.magnitude;
+
+            if (distance < 0.03f)
+            {
+                separationDirection += randomSeparationDirection * 0.4f;
+            }
+            else
+            {
+                separationDirection += awayFromEnemy.normalized / distance;
+            }
+        }
+
+        return separationDirection.normalized;
+    }
+
+    void UpdateFlip(Vector2 direction)
+    {
+        if (sr == null) return;
+
+        if (direction.x > flipThreshold)
+            sr.flipX = false;
+        else if (direction.x < -flipThreshold)
+            sr.flipX = true;
+    }
+
+    void GenerateRandomSeparationDirection()
+    {
+        randomSeparationDirection = Random.insideUnitCircle.normalized;
+
+        if (randomSeparationDirection == Vector2.zero)
+            randomSeparationDirection = Vector2.right;
     }
 
     void TryAttack()
     {
+        if (data == null) return;
+        if (playerHealth == null) return;
+
         if (Time.time - lastAttackTime < data.attackCooldown) return;
+
         lastAttackTime = Time.time;
         grunt.Attack(playerHealth);
     }
 
     void OnDrawGizmosSelected()
     {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        Vector3 center = (sr != null) ? sr.bounds.center : transform.position;
-        float scale = transform.localScale.x;
+        SpriteRenderer currentSr = GetComponent<SpriteRenderer>();
+        Vector3 center = currentSr != null ? currentSr.bounds.center : transform.position;
 
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(center, (grunt != null ? grunt.AttackRange : 1.2f) * scale);
+        Gizmos.DrawWireSphere(center, grunt != null ? grunt.AttackRange : 0.5f);
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(center, 6f * scale);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(center, separationRadius);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(center, stopDistanceFromPlayer);
     }
 }
