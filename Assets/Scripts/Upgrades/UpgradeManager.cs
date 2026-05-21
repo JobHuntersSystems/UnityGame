@@ -16,6 +16,11 @@ public class UpgradeManager : MonoBehaviour
     private Shooter        shooter;
     private UpgradeData[]  currentChoices;
 
+    private Dictionary<UpgradeType, int> upgradeLevels = new Dictionary<UpgradeType, int>();
+
+    public int GetLevel(UpgradeType type) =>
+        upgradeLevels.TryGetValue(type, out int lvl) ? lvl : 0;
+
     void Awake() => Instance = this;
 
     void Start()
@@ -49,6 +54,8 @@ public class UpgradeManager : MonoBehaviour
 
     private void Apply(UpgradeData u)
     {
+        upgradeLevels[u.type] = GetLevel(u.type) + 1;
+
         switch (u.type)
         {
             case UpgradeType.ShootRate:       shooter.UpgradeShootRate(u.value);              break;
@@ -67,14 +74,14 @@ public class UpgradeManager : MonoBehaviour
     private void ApplySlowToEnemies(float slowAmount)
     {
         EnemySpeedMultiplier *= (1f - slowAmount);
-        foreach (Enemy e in FindObjectsByType<Enemy>())
+        foreach (Enemy e in FindObjectsByType<Enemy>(FindObjectsSortMode.None))
             e.ApplySlow(1f - slowAmount);
     }
 
     private void ApplyXPAttraction(float bonus)
     {
         XPAttractionBonus += bonus;
-        foreach (XPOrb orb in FindObjectsByType<XPOrb>())
+        foreach (XPOrb orb in FindObjectsByType<XPOrb>(FindObjectsSortMode.None))
             orb.attractionRange += bonus;
     }
 }

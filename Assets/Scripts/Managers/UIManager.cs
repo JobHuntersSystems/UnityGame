@@ -99,7 +99,10 @@ public class UIManager : MonoBehaviour
         {
             UpgradeData[] choices = UpgradeManager.Instance.PickRandomUpgrades(upgradeButtons.Length);
             for (int i = 0; i < upgradeLabels.Length && i < choices.Length; i++)
-                upgradeLabels[i].text = $"<b>{choices[i].upgradeName}</b>\n{choices[i].description}";
+            {
+                int lv = UpgradeManager.Instance.GetLevel(choices[i].type);
+                upgradeLabels[i].text = $"<b>{choices[i].upgradeName}</b>\n{choices[i].description}\n\n\nLv.{lv + 1} → {lv + 2}";
+            }
         }
 
         upgradePanel.SetActive(true);
