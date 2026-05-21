@@ -1111,7 +1111,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 2
-  m_Size: {x: 1000, y: 1000}
+  m_Size: {x: 2000, y: 2000}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -2100,9 +2100,9 @@ MonoBehaviour:
   initialOrbCount: 400
   mapMin: {x: -134, y: 150}
   mapMax: {x: 135, y: -119}
-  maxTotalOrbs: 200
-  spawnInterval: 1
-  orbsPerWave: 5
+  maxTotalOrbs: 400
+  spawnInterval: 0.75
+  orbsPerWave: 6
   maxSpawnRadius: 200
   chanceBasic: 60
   chanceEnhanced: 30
@@ -2853,7 +2853,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &907535713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3599,7 +3599,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
