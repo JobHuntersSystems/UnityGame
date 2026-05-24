@@ -17,7 +17,8 @@ MonoBehaviour:
   moveSpeed: 3
   attackDamage: 20
   attackRange: 1
-  experienceReward: 5
+  minExperienceReward: 10
+  maxExperienceReward: 20
   attackCooldown: 1
   chargeMultiplier: 2.5
   chargeDuration: 3

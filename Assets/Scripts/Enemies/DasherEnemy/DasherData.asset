@@ -17,13 +17,13 @@ MonoBehaviour:
   moveSpeed: 3
   attackDamage: 15
   attackRange: 0.3
-  minExperienceReward: 20
-  maxExperienceReward: 40
+  minExperienceReward: 10
+  maxExperienceReward: 20
   attackCooldown: 0.8
-  dashSpeed: 25
-  dashDuration: 1
+  dashSpeed: 20
+  dashDuration: 0.5
   dashDamageMultiplier: 2
-  dashPrepTime: 0.5
+  dashPrepTime: 0.4
   dashCooldownMin: 3
   dashCooldownMax: 5
   zigzagFrequency: 2
