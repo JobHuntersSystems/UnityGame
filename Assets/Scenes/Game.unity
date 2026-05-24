@@ -2946,7 +2946,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   enemyPrefabs:
   - {fileID: 3009341395633258677, guid: 3717b64ec8f32c14ba55845b4a94f32c, type: 3}
-  maxEnemies: 20
+  - {fileID: 3692718765417999025, guid: 4bdb077e1a4c1b84c9b5c6dfb49b00cf, type: 3}
+  maxEnemies: 30
   spawnInterval: 10
   enemiesPerWave: 3
   maxSpawnRadius: 20
@@ -3954,8 +3955,8 @@ MonoBehaviour:
   - tag: Grunt
     prefab: {fileID: 3009341395633258677, guid: 3717b64ec8f32c14ba55845b4a94f32c, type: 3}
     size: 70
-  - tag: RangeEnemy
-    prefab: {fileID: 3009341395633258677, guid: 3717b64ec8f32c14ba55845b4a94f32c, type: 3}
+  - tag: Dasher
+    prefab: {fileID: 3692718765417999025, guid: 4bdb077e1a4c1b84c9b5c6dfb49b00cf, type: 3}
     size: 30
   - tag: SpecialEnemy
     prefab: {fileID: 3009341395633258677, guid: 3717b64ec8f32c14ba55845b4a94f32c, type: 3}
